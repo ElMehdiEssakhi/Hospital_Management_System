@@ -26,7 +26,7 @@ public class AppModel {
         doctorModel = new DefaultTableModel(Docolumns,0);
         String[] Patcolumns = {"id","FirstName","LastName","Date of Birth","Phone Number","File Number"};
         patientModel= new DefaultTableModel(Patcolumns,0);
-        String[] appcolumns={"Patient File Number", "Patient Name", "Doctor Name", "Date", "Time"};
+        String[] appcolumns={"id","Patient File Number", "Patient Name", "Doctor Name", "Date", "Time"};
         appointmentModel = new DefaultTableModel(appcolumns,0);
     }
     public void addPatient(Patient patient) {
@@ -119,7 +119,7 @@ public class AppModel {
         String sql = "insert into appointment (patient_file_num,doctor_id,date,time) values(?,?,?,?)";
         try{
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1,rendezVous.getPatientId());
+            stmt.setString(1,rendezVous.getPatientFileNum());
             stmt.setInt(2,rendezVous.getDoctorId());
             stmt.setDate(3,rendezVous.getDate());
             stmt.setTime(4,rendezVous.getTime());
@@ -133,17 +133,17 @@ public class AppModel {
     public void editRendezVous(RendezVous rendezVous) {
         String sql = "UPDATE appointment SET patient_file_num=?, doctor_id=?, date=?, time=? WHERE id=?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, rendezVous.getPatientId());
+            stmt.setString(1, rendezVous.getPatientFileNum());
             stmt.setInt(2, rendezVous.getDoctorId());
             stmt.setDate(3, rendezVous.getDate());
             stmt.setTime(4, rendezVous.getTime());
-            stmt.setInt(4, rendezVous.getId());  // ID needed for WHERE condition
+            stmt.setInt(5, rendezVous.getId());  // ID needed for WHERE condition
             stmt.executeUpdate();
             System.out.println("✅ Rendezvous updated successfully!");
         } catch (SQLException e) {
             System.err.println("❌ Failed to update rendezvous: " + e.getMessage());
         }
-
+        updateAppointmentTable();
     }
     public void deleteRendezVous(int rendezVousId) {
         String sql = "DELETE FROM appointment WHERE id=?";
@@ -154,6 +154,7 @@ public class AppModel {
         } catch (SQLException e) {
             System.err.println("❌ Failed to delete rendezvous: " + e.getMessage());
         }
+        updateAppointmentTable();
     }
     public String authenticate(String name, String password) {
         String sql = "SELECT * FROM user WHERE username=? AND password=?";
@@ -198,6 +199,7 @@ public class AppModel {
     public void updateAppointmentTable() {
         appointmentModel.setRowCount(0);
         String sql = "SELECT " +
+                "a.id AS id,"+
                 "a.doctor_id AS doctor_id, " +
                 "d.name AS doctor_name, " +
                 "a.patient_file_num AS patient_id, " +
@@ -211,7 +213,7 @@ public class AppModel {
             Statement stmt = conn.createStatement();
             ResultSet rs= stmt.executeQuery(sql);
             while (rs.next()) {
-                appointmentModel.addRow(new Object[]{rs.getString("patient_id"), rs.getString("patient_name"), rs.getString("doctor_name"), rs.getDate("date"),rs.getTime("time")});
+                appointmentModel.addRow(new Object[]{rs.getInt("id"),rs.getString("patient_id"), rs.getString("patient_name"), rs.getString("doctor_name"), rs.getDate("date"),rs.getTime("time")});
             }
         } catch (Exception e) {
             System.err.println("Sql Error: " + e.getMessage());

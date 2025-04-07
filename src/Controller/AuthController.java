@@ -14,11 +14,9 @@ public class AuthController implements ActionListener {
     public AuthController(Login login, AppModel appModel) {
         this.login = login;
         this.appModel = appModel;
-        login.getLoginButton().addActionListener(this);
+        login.getLoginButton().addActionListener(this::authenticate);
     }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
+    public void authenticate(ActionEvent e) {
         String name = login.getUsername();
         String password = login.getPassword();
         String result = appModel.authenticate(name, password);
@@ -28,13 +26,22 @@ public class AuthController implements ActionListener {
             System.out.println("Login Successful");
             login.dispose();
             if(result.equals("secretary")) {SecrView secrView = new SecrView();
-                                            new ManageDoctorsController(secrView.getDocMView(),appModel);
-                                            new ManagePatientsController(secrView.getPatientView(), appModel);
-                                            new ManageAppController(secrView.getAppView(),appModel);
+                secrView.getLogoutButton().addActionListener(ev-> {
+                    secrView.dispose();
+                    Login login1 = new Login();
+                    AuthController authController = new AuthController(login1,appModel);
+                });
+                new ManageDoctorsController(secrView.getDocMView(),appModel);
+                new ManagePatientsController(secrView.getPatientView(), appModel);
+                new ManageAppController(secrView,secrView.getAppView(),appModel);
             }
             else if(result.equals("admin")) {SecrView adminView = new SecrView();}
             else if (result.equals("doctor")){DoctorView doctorView = new DoctorView();}
         }
+    }
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
 
     }
 }

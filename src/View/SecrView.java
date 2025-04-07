@@ -7,8 +7,7 @@ public class SecrView extends JFrame {
     private JPanel mainPanel;
     private JPanel choicePanel;
     private JButton doctorButton;
-    private JButton patientButton;
-    private JButton appointmentButton;
+    private JButton patientButton,appointmentButton,logoutButton;
     private CardLayout cardLayout;
     private ManageDoctorsView manageDoctorsView;
     private ManagePatientsView managePatientsView;
@@ -37,6 +36,13 @@ public class SecrView extends JFrame {
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(20, 50, 50, 50));
         buttonPanel.setBackground(new Color(230, 240, 255));
 
+        JPanel logoutPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        logoutPanel.setBackground(new Color(230, 240, 255));
+        logoutButton = new JButton("Logout");
+        logoutButton.setForeground(new Color(255, 255, 255));
+        logoutButton.setBackground(new Color(207, 28, 28));
+        logoutPanel.add(logoutButton);
+
         doctorButton = createStyledButton("Manage Doctors");
         patientButton = createStyledButton("Manage Patients");
         appointmentButton = createStyledButton("Manage Appointments");
@@ -47,6 +53,7 @@ public class SecrView extends JFrame {
 
         choicePanel.add(welcomeLabel, BorderLayout.NORTH);
         choicePanel.add(buttonPanel, BorderLayout.CENTER);
+        choicePanel.add(logoutPanel, BorderLayout.SOUTH);
 
         // Creating pages for doctor and patient management
         manageDoctorsView = new ManageDoctorsView(cardLayout, mainPanel);
@@ -79,10 +86,17 @@ public class SecrView extends JFrame {
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
         return button;
     }
-
+    public JButton getLogoutButton(){
+        return logoutButton;
+    }
+    //get views
     public ManageDoctorsView getDocMView() {
         return manageDoctorsView;
     }
     public ManagePatientsView getPatientView() {return managePatientsView;}
     public ManageAppView getAppView() {return manageAppView;}
+    //get nav buttons
+    public JButton getDoctorButton() {return doctorButton;}
+    public JButton getPatientButton() {return patientButton;}
+    public JButton getAppointmentButton() {return appointmentButton;}
 }

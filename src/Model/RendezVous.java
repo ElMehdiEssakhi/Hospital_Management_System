@@ -15,10 +15,17 @@ public class RendezVous {
         this.date = date;
         this.time = time;
     }
+    public RendezVous(int id, String patientFileNum, int DoctorId, java.sql.Date date, Time time) {
+        this.id = id;
+        this.patientFileNum = patientFileNum;
+        this.DoctorId = DoctorId;
+        this.date = date;
+        this.time = time;
+    }
     public int getId() {
         return id;
     }
-    public String getPatientId() {
+    public String getPatientFileNum() {
         return patientFileNum;
     }
     public int getDoctorId() {

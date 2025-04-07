@@ -67,7 +67,15 @@ public class ManageAppView extends JPanel {
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
         return button;
     }
+    public int get_id(){
+        int selected=rendezVousTable.getSelectedRow();
+        if(selected==-1){
+            return -1;
+        }else{
+            return (int) rendezVousTable.getValueAt(selected,0);
+        }
 
+    }
     public JComboBox getComboBox() {
         return doctorComboBox;
     }
