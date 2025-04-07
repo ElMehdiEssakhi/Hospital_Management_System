@@ -30,6 +30,7 @@ public class AuthController implements ActionListener {
             if(result.equals("secretary")) {SecrView secrView = new SecrView();
                                             new ManageDoctorsController(secrView.getDocMView(),appModel);
                                             new ManagePatientsController(secrView.getPatientView(), appModel);
+                                            new ManageAppController(secrView.getAppView(),appModel);
             }
             else if(result.equals("admin")) {SecrView adminView = new SecrView();}
             else if (result.equals("doctor")){DoctorView doctorView = new DoctorView();}

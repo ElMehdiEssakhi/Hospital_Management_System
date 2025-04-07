@@ -1,22 +1,25 @@
 package Model;
 
 import java.sql.Date;
+import java.sql.Time;
 
 public class RendezVous {
     private int id;
-    private int patientId;
+    private String patientFileNum;
     private int DoctorId;
     private java.sql.Date date;
-    public RendezVous(int patientId, int DoctorId, java.sql.Date date) {
-        this.patientId = patientId;
+    private Time time;
+    public RendezVous(String patientFileNum, int DoctorId, java.sql.Date date, Time time) {
+        this.patientFileNum = patientFileNum;
         this.DoctorId = DoctorId;
         this.date = date;
+        this.time = time;
     }
     public int getId() {
         return id;
     }
-    public int getPatientId() {
-        return patientId;
+    public String getPatientId() {
+        return patientFileNum;
     }
     public int getDoctorId() {
         return DoctorId;
@@ -24,4 +27,5 @@ public class RendezVous {
     public Date getDate() {
         return date;
     }
+    public Time getTime() {return time;}
 }

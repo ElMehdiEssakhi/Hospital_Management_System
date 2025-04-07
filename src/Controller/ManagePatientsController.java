@@ -54,15 +54,15 @@ public class ManagePatientsController implements ActionListener {
             try{
                 java.util.Date utilDate = sdf.parse(dobField.getText());
                 date=new java.sql.Date(utilDate.getTime());
+                appModel.addPatient(new Patient(firstnameField.getText(),lastnameField.getText(), date,phoneNumField.getText(),fileNumber.getText()));
+                firstnameField.setText("");
+                lastnameField.setText("");
+                dobField.setText("");
+                phoneNumField.setText("");
+                fileNumber.setText("");
             }catch (ParseException ex) {
                 JOptionPane.showMessageDialog(managePatientsView, "Invalid Date! Use format yyyy-MM-dd", "Error", JOptionPane.ERROR_MESSAGE);
             }
-            appModel.addPatient(new Patient(firstnameField.getText(),lastnameField.getText(), date,phoneNumField.getText(),fileNumber.getText()));
-            firstnameField.setText("");
-            lastnameField.setText("");
-            dobField.setText("");
-            phoneNumField.setText("");
-            fileNumber.setText("");
         } else {
             JOptionPane.showMessageDialog(managePatientsView, "Please fill all fields", "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -84,15 +84,15 @@ public class ManagePatientsController implements ActionListener {
                 try{
                     java.util.Date utilDate = sdf.parse(dobField.getText());
                     date=new java.sql.Date(utilDate.getTime());
+                    appModel.editPatient(new Patient(selected,firstnameField.getText(),lastnameField.getText(), date,phoneNumField.getText(),fileNumber.getText()));
+                    firstnameField.setText("");
+                    lastnameField.setText("");
+                    dobField.setText("");
+                    phoneNumField.setText("");
+                    fileNumber.setText("");
                 } catch (ParseException ex) {
                     JOptionPane.showMessageDialog(managePatientsView, "Invalid Date! Use format yyyy-MM-dd", "Error", JOptionPane.ERROR_MESSAGE);
                 }
-                appModel.editPatient(new Patient(selected,firstnameField.getText(),lastnameField.getText(), date,phoneNumField.getText(),fileNumber.getText()));
-                firstnameField.setText("");
-                lastnameField.setText("");
-                dobField.setText("");
-                phoneNumField.setText("");
-                fileNumber.setText("");
             } else {
                 JOptionPane.showMessageDialog(managePatientsView, "Please fill all fields", "Error", JOptionPane.ERROR_MESSAGE);
             }

@@ -12,6 +12,7 @@ public class SecrView extends JFrame {
     private CardLayout cardLayout;
     private ManageDoctorsView manageDoctorsView;
     private ManagePatientsView managePatientsView;
+    private ManageAppView manageAppView;
     public SecrView() {
         setTitle("Hospital Management System");
         setSize(800, 600);
@@ -50,11 +51,11 @@ public class SecrView extends JFrame {
         // Creating pages for doctor and patient management
         manageDoctorsView = new ManageDoctorsView(cardLayout, mainPanel);
         managePatientsView = new ManagePatientsView(cardLayout, mainPanel);
-        RVousView rVousView = new RVousView(cardLayout,mainPanel);
+        manageAppView = new ManageAppView(cardLayout,mainPanel);
         mainPanel.add(choicePanel, "choice");
         mainPanel.add(manageDoctorsView, "doctor");
         mainPanel.add(managePatientsView, "patient");
-        mainPanel.add(rVousView, "appointment");
+        mainPanel.add(manageAppView, "appointment");
 
         // Button Actions
         doctorButton.addActionListener(e -> cardLayout.show(mainPanel, "doctor"));
@@ -83,4 +84,5 @@ public class SecrView extends JFrame {
         return manageDoctorsView;
     }
     public ManagePatientsView getPatientView() {return managePatientsView;}
+    public ManageAppView getAppView() {return manageAppView;}
 }

@@ -9,7 +9,7 @@ public class AppModel {
     private Connection conn;
     private ArrayList<Doctor> doctors;
     private ArrayList<Patient> patients;
-    private DefaultTableModel doctorModel,patientModel;
+    private DefaultTableModel doctorModel,patientModel,appointmentModel;
     public AppModel() {
         try{
             String url = "jdbc:mysql://localhost:3306/HospitalDB";
@@ -26,6 +26,8 @@ public class AppModel {
         doctorModel = new DefaultTableModel(Docolumns,0);
         String[] Patcolumns = {"id","FirstName","LastName","Date of Birth","Phone Number","File Number"};
         patientModel= new DefaultTableModel(Patcolumns,0);
+        String[] appcolumns={"Patient File Number", "Patient Name", "Doctor Name", "Date", "Time"};
+        appointmentModel = new DefaultTableModel(appcolumns,0);
     }
     public void addPatient(Patient patient) {
         String sql = "insert into patient (Firstname,Lastname,dob,phone,file_number) values(?,?,?,?,?)";
@@ -114,24 +116,27 @@ public class AppModel {
         updateDoctorTable();
     }
     public void addRendezVous(RendezVous rendezVous) {
-        String sql = "insert into appointment (patient_id,doctor_id,date) values(?,?,?)";
+        String sql = "insert into appointment (patient_file_num,doctor_id,date,time) values(?,?,?,?)";
         try{
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setInt(1,rendezVous.getPatientId());
+            stmt.setString(1,rendezVous.getPatientId());
             stmt.setInt(2,rendezVous.getDoctorId());
             stmt.setDate(3,rendezVous.getDate());
+            stmt.setTime(4,rendezVous.getTime());
             stmt.executeUpdate();
             System.out.println("Rendez Vous added successfully!");
         }catch (SQLException e){
             System.err.println("❌ Failed to add rendezvous: " + e.getMessage());
         }
+        updateAppointmentTable();
     }
     public void editRendezVous(RendezVous rendezVous) {
-        String sql = "UPDATE appointment SET patient_id=?, doctor_id=?, date=? WHERE id=?";
+        String sql = "UPDATE appointment SET patient_file_num=?, doctor_id=?, date=?, time=? WHERE id=?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, rendezVous.getPatientId());
+            stmt.setString(1, rendezVous.getPatientId());
             stmt.setInt(2, rendezVous.getDoctorId());
             stmt.setDate(3, rendezVous.getDate());
+            stmt.setTime(4, rendezVous.getTime());
             stmt.setInt(4, rendezVous.getId());  // ID needed for WHERE condition
             stmt.executeUpdate();
             System.out.println("✅ Rendezvous updated successfully!");
@@ -190,11 +195,36 @@ public class AppModel {
             System.err.println("Sql Error: " + e.getMessage());
         }
     }
+    public void updateAppointmentTable() {
+        appointmentModel.setRowCount(0);
+        String sql = "SELECT " +
+                "a.doctor_id AS doctor_id, " +
+                "d.name AS doctor_name, " +
+                "a.patient_file_num AS patient_id, " +
+                "CONCAT(p.Firstname, ' ', p.Lastname) AS patient_name, " +
+                "a.date, " +
+                "a.time " +
+                "FROM appointment a " +
+                "JOIN doctor d ON a.doctor_id = d.id " +
+                "JOIN patient p ON a.patient_file_num = p.file_number";
+        try{
+            Statement stmt = conn.createStatement();
+            ResultSet rs= stmt.executeQuery(sql);
+            while (rs.next()) {
+                appointmentModel.addRow(new Object[]{rs.getString("patient_id"), rs.getString("patient_name"), rs.getString("doctor_name"), rs.getDate("date"),rs.getTime("time")});
+            }
+        } catch (Exception e) {
+            System.err.println("Sql Error: " + e.getMessage());
+        }
+    }
     public DefaultTableModel getDoctorModel() {
         return this.doctorModel;
     }
     public DefaultTableModel getPatientModel() {
         return this.patientModel;
+    }
+    public DefaultTableModel getAppointmentModel() {
+        return this.appointmentModel;
     }
     public void searchPatient(String fileNum) {
         String sql = "SELECT * FROM patient where file_number=?";
